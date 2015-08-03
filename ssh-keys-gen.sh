@@ -1,4 +1,8 @@
 #!/bin/bash
+# @file ssh-keys-gen.sh
+# @author 沈煜, shenyu@shenyu.me
+# @brief 一键生成ssh-keys
+# @date 2015/07/31
 
 HOME_DIR=~
 RSA_PUB_FILE=$HOME_DIR/.ssh/id_rsa.pub
