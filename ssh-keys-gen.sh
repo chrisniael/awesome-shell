@@ -4,6 +4,8 @@
 # @brief 一键生成ssh-keys
 # @date 2015/07/31
 
+set -e
+
 HOME_DIR=~
 RSA_PUB_FILE=$HOME_DIR/.ssh/id_rsa.pub
 RSA_FILE=$HOME_DIR/.ssh/id_rsa
