@@ -6,6 +6,8 @@
 # | @date 2015/08/08                |
 # +---------------------------------+
 
+set -e
+
 TAOBAO_RUBY_SOURCE=https://ruby.taobao.org/
 OFFICIAL_RUBY_SOURCE=https://rubygems.org/
 
