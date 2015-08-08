@@ -37,6 +37,11 @@ fi
 
 echo -n "Please input your email: "
 read your_email
-ssh-keygen -t rsa -b 4096 -P "" -f "$HOME_DIR/.ssh/id_rsa" -C "$your_email"
+ssh-keygen -t rsa -b 4096 -P "" -f "$RSA_FILE" -C "$your_email"
+
+if [[ `uname` == 'Darwin' ]]; then
+	# MacOS 则将公钥拷贝至剪切板
+	pbcopy < $RSA_PUB_FILE
+fi
 
 echo "ssh keys generate success."
