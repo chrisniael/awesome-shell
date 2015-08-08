@@ -37,6 +37,6 @@ fi
 
 echo -n "Please input your email: "
 read your_email
-ssh-keygen -t rsa -b 4096 -P "" -f "/home/shenyu/.ssh/id_rsa" -C "$your_email"
+ssh-keygen -t rsa -b 4096 -P "" -f "$HOME_DIR/.ssh/id_rsa" -C "$your_email"
 
 echo "ssh keys generate success."
