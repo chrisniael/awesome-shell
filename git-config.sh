@@ -1,8 +1,10 @@
 #!/bin/bash
-# @file ssh-keys-gen.sh
-# @author 沈煜, shenyu@shenyu.me
-# @brief 一键配置git
-# @date 2015/07/31
+# +---------------------------------+
+# | @file git-config.sh             |
+# | @author 沈煜, shenyu@shenyu.me  |
+# | @brief 一键配置git              |
+# | @date 2015/07/31                |
+# +---------------------------------+
 
 set -e
 
