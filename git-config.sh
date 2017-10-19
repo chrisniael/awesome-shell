@@ -33,3 +33,5 @@ git config --global color.decorate auto
 
 # 默认编辑器
 git config --global core.editor vim
+
+git config --global credential.helper store
