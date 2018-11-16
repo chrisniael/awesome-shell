@@ -5,7 +5,7 @@
 * [git-config.sh](git-config.sh) : 配置git
 * [install_jekyll.sh](install_jekyll.sh) : 安装jekyll
 * [ssh-keys-gen.sh](ssh-keys-gen.sh) : 生成ssh key
-* []
+* [centos-config.sh](centos-config.sh) : CentOS 开发环境配置
 
 ## 一键配置
 
