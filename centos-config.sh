@@ -4,23 +4,33 @@ VIM_VERSION=8.1.0516
 MYSQL_ROOT_PASSWD=123456
 REDIS_PASSWD=123456
 
+function judge_user()
+{
+  if [ $(whoami) != "root" ]
+  then
+    echo "Error: Please run the shell script with root."
+    exit 1
+  fi
+}
+
 function judge_system()
 {
 	if [ ! -f /etc/centos-release ]
 	then
-		echo "Only support CentOS 7."
+		echo "Error: Only support CentOS 7."
 		exit 1
 	fi
 
 	grep "CentOS Linux release 7" /etc/centos-release
 	if [ ! $? -eq 0 ]
 	then
-		echo "Only support CentOS 7."
+		echo "Error: Only support CentOS 7."
 		exit 1
 	fi
 }
 
-function yum_install() {
+function yum_install()
+{
   yum update -y
 
   yum install -y epel-release \
@@ -60,7 +70,8 @@ function yum_install() {
 }
 
 # 安装 vim 8
-function install_vim8() {
+function install_vim8()
+{
   yum install -y gcc gcc-c++ cmake3 ruby ruby-devel lua lua-devel ctags git \
     python python-devel tcl-devel ncurses-devel perl perl-devel \
     perl-ExtUtils-ParseXS perl-ExtUtils-CBuilder perl-ExtUtils-Embed
@@ -84,7 +95,8 @@ function install_vim8() {
 }
 
 # 安装 mycli
-function install_mycli() {
+function install_mycli()
+{
   yum install -y python2-pip
   pip install mycli
 }
@@ -108,9 +120,15 @@ function config_redis()
 	systemctl enable redis
 }
 
+function config_core_dump()
+{
+  echo "core-%e-%p-%t" > /proc/sys/kernel/core_pattern
+}
+
 ## 程序开始执行处，上面是定义
 set -e
 
+judge_user
 judge_system
 
 yum_install
@@ -119,3 +137,4 @@ install_mycli
 
 config_mariadb
 config_redis
+config_core_dump
