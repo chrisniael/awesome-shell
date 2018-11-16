@@ -36,8 +36,8 @@ function yum_install()
   yum install -y epel-release \
 								 centos-release-scl 
 
-  yum install -y deltarpm
-								 passwd
+  yum install -y deltarpm \
+								 passwd \
                  openssl \
                  openssh-server \
                  protobuf-devel \
