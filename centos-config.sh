@@ -98,6 +98,7 @@ function install_vim8()
 function install_mycli()
 {
   yum install -y python2-pip
+  #pip install --upgrade setuptools
   pip install mycli
 }
 
