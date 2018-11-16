@@ -27,7 +27,7 @@ fi
 if [ $rsa_pub_file_exist -eq 1 ] && [ $rsa_file_exist -eq 1 ]
 then
 	echo "ssh keys already exist."
-	exit 0
+	exit 1
 fi
 
 if [ $rsa_pub_file_exist -ne $rsa_file_exist ]
