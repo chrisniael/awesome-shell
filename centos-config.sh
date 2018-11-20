@@ -33,11 +33,12 @@ function yum_install()
 {
   yum update -y
 
+  yum install -y deltarpm
+
   yum install -y epel-release \
 								 centos-release-scl 
 
-  yum install -y deltarpm \
-								 passwd \
+  yum install -y passwd \
                  openssl \
                  openssh-server \
                  protobuf-devel \
