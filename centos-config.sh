@@ -65,7 +65,9 @@ function yum_install()
                  llvm-toolset-7 \
                  sclo-git212-git \
                  gitflow \
-                 lrzsz
+                 lrzsz \
+                 bash-completion \
+                 bind-utils
 
 	ln -s /usr/bin/cmake3 /bin/cmake
 }
