@@ -68,6 +68,7 @@ function yum_install()
                  lrzsz \
                  bash-completion \
                  bind-utils \
+                 man-pages \
                  devtoolset-7-libstdc++-docs
 
 	ln -s /usr/bin/cmake3 /bin/cmake
