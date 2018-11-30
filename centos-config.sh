@@ -67,7 +67,8 @@ function yum_install()
                  gitflow \
                  lrzsz \
                  bash-completion \
-                 bind-utils
+                 bind-utils \
+                 devtoolset-7-libstdc++-docs
 
 	ln -s /usr/bin/cmake3 /bin/cmake
 }
