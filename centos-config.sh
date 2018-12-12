@@ -69,7 +69,8 @@ function yum_install()
                  bash-completion \
                  bind-utils \
                  man-pages \
-                 devtoolset-7-libstdc++-docs
+                 devtoolset-7-libstdc++-docs \
+                 tree
 
 	ln -s /usr/bin/cmake3 /bin/cmake
 }
