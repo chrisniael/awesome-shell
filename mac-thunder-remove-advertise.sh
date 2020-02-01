@@ -1,6 +1,12 @@
 #!/bin/bash
 # Remove advertise from mac thunder app
 
+if [ "$(uname -s)" != "Darwin" ]
+then
+  echo "Error: Not MacOS system!"
+  exit 1
+fi
+
 plugins=(advertising.xlplugin applications.xlplugin featuredpage.xlplugin liveupdate.xlplugin)
 
 for plugin in ${plugins[@]}
