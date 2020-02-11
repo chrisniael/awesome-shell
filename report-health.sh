@@ -19,9 +19,9 @@
 # 抓了几次包，这个 cookie 值一直没有变过
 
 cookie_sid="md5"
-from_location="花村"
-comeback_pass_city="努巴尼"
-detail_living_addr="漓江塔"
+from_location="花村"  # 从哪里返沪
+comeback_pass_city="努巴尼"  # 中途停留城市
+detail_living_addr="漓江塔"  # 您所在工作城市的居住地址
 
 curl --silent \
   --cookie "HEALTH_REPORT_YOUXI2_SID=${cookie_sid}" \
