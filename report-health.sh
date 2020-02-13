@@ -4,8 +4,6 @@
 # 产品差评，很多项不能记录上次填写，
 # App 切出去再切回来或者打开或者下拉一下通知栏，所有填写全部清空重来，想摔手机的节奏
 
-cookie_file=$(mktemp)
-
 user=shenyu.tommy
 passwd=123456
 
@@ -31,19 +29,21 @@ commutingMode="自驾(汽车/自行车/电瓶车)"  # 您日常的通勤方式
 oneCommutingTime="30分钟内"  # 您日程的单程通勤时间
 
 
-passwd_md5=$(echo -n $passwd | md5 | tr a-z A-Z)
-echo $passwd_md5
+cookie_file=$(mktemp)
 
-# echo "登陆即信"
+passwd_md5=$(echo -n $passwd | md5 | tr a-z A-Z)
+# echo $passwd_md5
+
+echo "登陆即信..."
 login_response=$(curl --silent \
   --cookie-jar $cookie_file \
   --request GET \
   --url "https://mwf.corp.sdo.com/WFM/SecretVerify.aspx?appid=1614&userid=${user}&password=${passwd_md5}&secretcode=123")
 
-echo $login_response
+# echo $login_response
 
 login_response_result=$(echo $login_response | awk -F ',' '{print $1}' | awk -F ':' '{print $2}')
-echo $login_response_result
+# echo $login_response_result
 if [ "$login_response_result" != "1" ]
 then
   login_response_message=$(echo $login_response | awk -F ',' '{print $2}' | awk -F '"' '{print $4}')
@@ -55,11 +55,11 @@ else
 fi
 
 login_response_sid=$(echo $login_response | awk -F ',' '{print $3}' | awk -F '"' '{print $4}')
-echo $login_response_sid
+# echo $login_response_sid
 login_response_key=$(echo $login_response | awk -F ',' '{print $4}' | awk -F '"' '{print $4}')
-echo $login_response_key
+# echo $login_response_key
 login_response_ticket=$(echo $login_response | awk -F ',' '{print $5}' | awk -F '"' '{print $4}')
-echo $login_response_ticket
+# echo $login_response_ticket
 
 # login_response_sid="E6EBB789881541F2A6CBABBCD5656A31"
 # login_response_key="F8050FC895304799B3E6F23D60B512DE"
@@ -69,20 +69,20 @@ function get_sign() {
   echo -n "${1}${login_response_key}" | md5 | tr a-z A-Z
 }
 
+echo "生成新票据..."
 sleep 2
-echo "生成新票据"
 params="appid=1614&sid=${login_response_sid}"
-echo $params
+# echo $params
 sign=$(get_sign $params)
-echo $sign
+# echo $sign
 new_ticket_response=$(curl --silent \
   --cookie $cookie_file \
   --cookie-jar $cookie_file \
   --request GET \
   --url "https://mwf.corp.sdo.com/WFM/GetTicketNew.aspx?${params}&sign=${sign}")
-echo $new_ticket_response
+# echo $new_ticket_response
 new_ticket_response_result=$(echo $new_ticket_response | awk -F ',' '{print $1}' | awk -F ':' '{print $2}')
-echo $new_ticket_response_result
+# echo $new_ticket_response_result
 if [ "$new_ticket_response_result" != "1" ]
 then
   new_ticket_response_message=$(echo $new_ticket_response | awk -F ',' '{print $2}' | awk -F '"' '{print $4}')
@@ -93,23 +93,23 @@ else
   echo "成功."
 fi
 new_ticket_response_ticket=$(echo $new_ticket_response | awk -F ',' '{print $3}' | awk -F '"' '{print $4}')
-echo $new_ticket_response_ticket
+# echo $new_ticket_response_ticket
 
 
+echo "登陆健康上报系统..."
 sleep 1
-echo "登陆健康上报系统"
 params="appid=1614&sid=${login_response_sid}&ticket=${new_ticket_response_ticket}"
-echo $params
+# echo $params
 sign=$(get_sign $params)
-echo $sign
+# echo $sign
 health_login_response=$(curl --silent \
   --cookie $cookie_file \
   --cookie-jar $cookie_file \
   --request GET \
   --url "https://health.corp.sdo.com/hrapitest/user/mobileAuth?${params}&sign=${sign}")
-echo $health_login_response
+# echo $health_login_response
 health_login_response_code=$(echo $health_login_response | grep -E -o '"code":(\d)+' | awk -F ':' '{print $2}')
-echo $health_login_response_code
+# echo $health_login_response_code
 if [ "$health_login_response_code" != "0" ]
 then
   echo "Error: 登陆健康上报系统失败"
@@ -120,8 +120,8 @@ else
 fi
 
 
-sleep 3
-echo "上报健康信息"
+echo "上报健康信息..."
+sleep 2
 health_report_response=$(curl --silent \
   --location \
   --cookie $cookie_file \
@@ -130,9 +130,9 @@ health_report_response=$(curl --silent \
   --url "https://health.corp.sdo.com/hrapitest/hr/clockin" \
   --header 'Content-Type: application/json;charset=utf-8' \
   --data-raw "{\"workPlace\":\"${workPlace}\",\"workPlaceRemarks\":\"\",\"workCityId\":0,\"todayIsWork\":${todayIsWork},\"liveInCity\":\"${liveInCity}\",\"isContactRemarks\":\"\",\"currentLocalCity\":\"${currentLocalCity}\",\"isContact\":\"${isContact}\",\"inOutShanghai\":{\"comebackTime\":\"${comebackTime}\",\"fromLocation\":\"${fromLocation}\",\"isOutGuonian\":${isOutGuonian},\"way\":\"${way}\",\"wayNum\":\"\",\"leaveShanggaiTime\":\"${leaveShanggaiTime}\",\"comebackPassCity\":\"${comebackPassCity}\"},\"healthStatusRemarks\":\"\",\"healthStatus\":\"${healthStatus}\",\"floorId\":0,\"feverTemp\":\"\",\"feverIsDoctor\":\"\",\"feverDays\":0,\"coldDays\":0,\"buildingId\":0,\"trafficInfo\":\"\",\"livingStyle\":\"${livingStyle}\",\"detailLivingAddr\":\"${detailLivingAddr}\",\"familyCotenancyType\":\"${familyCotenancyType}\",\"familyCotenancyIsGeli\":\"${familyCotenancyIsGeli}\",\"familyCotenancyGeliEndTime\":\"${familyCotenancyGeliEndTime}\",\"commutingMode\":\"${commutingMode}\",\"oneCommutingTime\":\"${oneCommutingTime}\"}")
-echo $health_report_response
+# echo $health_report_response
 health_report_response_code=$(echo $health_report_response | grep -E -o '"code":(\d)+' | awk -F ':' '{print $2}')
-echo $health_report_response_code
+# echo $health_report_response_code
 if [ "$health_report_response_code" != "0" ]
 then
   health_report_response_errmsg=$(echo $health_report_response | grep -E -o '"errMsg":"(.)*?"' | awk -F ':' '{print $2}')
