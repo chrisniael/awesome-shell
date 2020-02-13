@@ -108,7 +108,7 @@ health_login_response=$(curl --silent \
   --request GET \
   --url "https://health.corp.sdo.com/hrapitest/user/mobileAuth?${params}&sign=${sign}")
 # echo $health_login_response
-health_login_response_code=$(echo $health_login_response | grep -E -o '"code":(\d)+' | awk -F ':' '{print $2}')
+health_login_response_code=$(echo $health_login_response | grep -E -o '"code":([0-9])+' | awk -F ':' '{print $2}')
 # echo $health_login_response_code
 if [ "$health_login_response_code" != "0" ]
 then
@@ -131,7 +131,7 @@ health_report_response=$(curl --silent \
   --header 'Content-Type: application/json;charset=utf-8' \
   --data-raw "{\"workPlace\":\"${workPlace}\",\"workPlaceRemarks\":\"\",\"workCityId\":0,\"todayIsWork\":${todayIsWork},\"liveInCity\":\"${liveInCity}\",\"isContactRemarks\":\"\",\"currentLocalCity\":\"${currentLocalCity}\",\"isContact\":\"${isContact}\",\"inOutShanghai\":{\"comebackTime\":\"${comebackTime}\",\"fromLocation\":\"${fromLocation}\",\"isOutGuonian\":${isOutGuonian},\"way\":\"${way}\",\"wayNum\":\"\",\"leaveShanggaiTime\":\"${leaveShanggaiTime}\",\"comebackPassCity\":\"${comebackPassCity}\"},\"healthStatusRemarks\":\"\",\"healthStatus\":\"${healthStatus}\",\"floorId\":0,\"feverTemp\":\"\",\"feverIsDoctor\":\"\",\"feverDays\":0,\"coldDays\":0,\"buildingId\":0,\"trafficInfo\":\"\",\"livingStyle\":\"${livingStyle}\",\"detailLivingAddr\":\"${detailLivingAddr}\",\"familyCotenancyType\":\"${familyCotenancyType}\",\"familyCotenancyIsGeli\":\"${familyCotenancyIsGeli}\",\"familyCotenancyGeliEndTime\":\"${familyCotenancyGeliEndTime}\",\"commutingMode\":\"${commutingMode}\",\"oneCommutingTime\":\"${oneCommutingTime}\"}")
 # echo $health_report_response
-health_report_response_code=$(echo $health_report_response | grep -E -o '"code":(\d)+' | awk -F ':' '{print $2}')
+health_report_response_code=$(echo $health_report_response | grep -E -o '"code":([0-9])+' | awk -F ':' '{print $2}')
 # echo $health_report_response_code
 if [ "$health_report_response_code" != "0" ]
 then
