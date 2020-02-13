@@ -31,7 +31,7 @@ oneCommutingTime="30分钟内"  # 您日程的单程通勤时间
 
 cookie_file=$(mktemp)
 
-passwd_md5=$(echo -n $passwd | md5 | tr a-z A-Z)
+passwd_md5=$(echo -n $passwd | md5sum | awk -F ' ' '{print $1}' | tr a-z A-Z)
 # echo $passwd_md5
 
 echo "登陆即信..."
@@ -66,7 +66,7 @@ login_response_ticket=$(echo $login_response | awk -F ',' '{print $5}' | awk -F 
 
 function get_sign() {
   # 别在这里 echo 调试信息，会影响函数返回值
-  echo -n "${1}${login_response_key}" | md5 | tr a-z A-Z
+  echo -n "${1}${login_response_key}" | md5sum | awk -F ' ' '{print $1}' | tr a-z A-Z
 }
 
 echo "生成新票据..."
