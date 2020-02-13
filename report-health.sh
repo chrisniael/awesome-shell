@@ -4,10 +4,31 @@
 # 产品差评，很多项不能记录上次填写，
 # App 切出去再切回来或者打开或者下拉一下通知栏，所有填写全部清空重来，想摔手机的节奏
 
-cookie_file=cookie
+cookie_file=$(mktemp)
 
 user=shenyu.tommy
 passwd=123456
+
+# 健康信息
+liveInCity="上海市-上海市-浦东新区"  # 您现在居住的城市
+todayIsWork=1  # 您今日是否办公，1：是，0：否
+workPlace="家里"  # 您今日的办公地点，可选值：公司，家里，其他
+currentLocalCity="上海市-上海市-浦东新区"  # 您现在的办公城市
+isContact="均无以上五种情况"  # 您是否存在以下情况
+healthStatus="良好"  # 您的今日健康状况
+isOutGuonian=1  # 春节期间是否离沪
+leaveShanggaiTime="2020-01-23 00:00:00" # 离沪日期
+fromLocation="江苏省-南通市"  # 您从哪里返沪
+comebackTime="2020-2-5"  # 返沪日期
+way="自驾"  # 返沪方式
+comebackPassCity="南通"  # 中途停留城市
+livingStyle="合租"  # 您现在的居住方式
+detailLivingAddr="上海"  # 您所在工作城市的居住地址
+familyCotenancyType="均无以上四种情况"  # 您的家庭成员/合租人是否存在以下情况？如本人居住，则选择均无以上四种情况
+familyCotenancyIsGeli="是"  # 您的家庭成员/合租人员是否处于自我隔离期？如本人居住，择选否
+familyCotenancyGeliEndTime="2020-2-20"  # 您的家庭成员/合租人员隔离期何时结束？
+commutingMode="自驾(汽车/自行车/电瓶车)"  # 您日常的通勤方式
+oneCommutingTime="30分钟内"  # 您日程的单程通勤时间
 
 
 passwd_md5=$(echo -n $passwd | md5 | tr a-z A-Z)
@@ -27,6 +48,7 @@ if [ "$login_response_result" != "1" ]
 then
   login_response_message=$(echo $login_response | awk -F ',' '{print $2}' | awk -F '"' '{print $4}')
   echo "Error: ${login_response_message}"
+  /bin/rm -f $cookie_file
   exit 1
 else
   echo "成功."
@@ -65,6 +87,7 @@ if [ "$new_ticket_response_result" != "1" ]
 then
   new_ticket_response_message=$(echo $new_ticket_response | awk -F ',' '{print $2}' | awk -F '"' '{print $4}')
   echo "Error: ${new_ticket_response_message}"
+  /bin/rm -f $cookie_file
   exit 1
 else
   echo "成功."
@@ -90,36 +113,14 @@ echo $health_login_response_code
 if [ "$health_login_response_code" != "0" ]
 then
   echo "Error: 登陆健康上报系统失败"
+  /bin/rm -f $cookie_file
   exit 1
 else
   echo "成功."
 fi
 
 
-
-# 健康信息
-liveInCity="上海市-上海市-浦东新区"  # 您现在居住的城市
-todayIsWork=1  # 您今日是否办公，1：是，0：否
-workPlace="家里"  # 您今日的办公地点，可选值：公司，家里，其他
-currentLocalCity="上海市-上海市-浦东新区"  # 您现在的办公城市
-isContact="均无以上五种情况"  # 您是否存在以下情况
-healthStatus="良好"  # 您的今日健康状况
-isOutGuonian=1  # 春节期间是否离沪
-leaveShanggaiTime="2020-01-23 00:00:00" # 离沪日期
-fromLocation="江苏省-南通市"  # 您从哪里返沪
-comebackTime="2020-2-5"  # 返沪日期
-way="自驾"  # 返沪方式
-comebackPassCity="南通"  # 中途停留城市
-livingStyle="合租"  # 您现在的居住方式
-detailLivingAddr="上海"  # 您所在工作城市的居住地址
-familyCotenancyType="均无以上四种情况"  # 您的家庭成员/合租人是否存在以下情况？如本人居住，则选择均无以上四种情况
-familyCotenancyIsGeli="是"  # 您的家庭成员/合租人员是否处于自我隔离期？如本人居住，择选否
-familyCotenancyGeliEndTime="2020-2-20"  # 您的家庭成员/合租人员隔离期何时结束？
-commutingMode="自驾(汽车/自行车/电瓶车)"  # 您日常的通勤方式
-oneCommutingTime="30分钟内"  # 您日程的单程通勤时间
-
-
-sleep 5
+sleep 3
 echo "上报健康信息"
 health_report_response=$(curl --silent \
   --location \
@@ -136,7 +137,10 @@ if [ "$health_report_response_code" != "0" ]
 then
   health_report_response_errmsg=$(echo $health_report_response | grep -E -o '"errMsg":"(.)*?"' | awk -F ':' '{print $2}')
   echo "Error: ${health_report_response_errmsg}" 
+  /bin/rm -f $cookie_file
   exit 1
 else
   echo "成功."
 fi
+
+/bin/rm -f $cookie_file
