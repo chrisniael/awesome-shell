@@ -4,8 +4,21 @@
 # 产品差评，很多项不能记录上次填写，
 # App 切出去再切回来或者打开或者下拉一下通知栏，所有填写全部清空重来，想摔手机的节奏
 
-user=shenyu.tommy
-passwd=123456
+# 用户名和密码
+# 用户名域账号全称，不包含域 (SNDA)，例如：shenyu.tommy，
+# 密码是域账号的登陆密码，也就是办公室电脑的开机密码，
+# 使用用户名密码登陆即信会导致手机端即信退出登陆状态，
+# 所以推荐使用 Sid 和 Key 来使用这个脚本，这样手机端也可以保持登陆状态，
+# 关于 Sid 和 Key 的获取见下面的描述
+user=""
+passwd=""
+
+# Sid 和 Key 用于免去登陆流程，这样做可以不剔掉手机客户端的登陆，且可以执行这个脚本，
+# 用 HTTP 调试代理工具 (Mac: ProxyMan) 抓一下登陆请求的 Response (https://mwf.corp.sdo.com/WFM/SecretVerify.aspx)，
+# 找到 Response 里 Sid 和 Key 这两个数值，填写在下面，
+# 确保上面的 user 和 passwd 填空，否则脚本还是会填写的账号密码登陆
+login_response_sid=""
+login_response_key=""
 
 # 健康信息
 liveInCity="上海市-上海市-浦东新区"  # 您现在居住的城市
@@ -29,36 +42,42 @@ commutingMode="自驾(汽车/自行车/电瓶车)"  # 您日常的通勤方式
 oneCommutingTime="30分钟内"  # 您日程的单程通勤时间
 
 
-passwd_md5=$(echo -n $passwd | md5sum | awk -F ' ' '{print $1}' | tr a-z A-Z)
-# echo $passwd_md5
 
-echo "登陆即信..."
-login_response=$(curl --silent \
-  --request GET \
-  --url "https://mwf.corp.sdo.com/WFM/SecretVerify.aspx?appid=1614&userid=${user}&password=${passwd_md5}&secretcode=123")
-
-# echo $login_response
-
-login_response_result=$(echo $login_response | awk -F ',' '{print $1}' | awk -F ':' '{print $2}')
-# echo $login_response_result
-if [ "$login_response_result" != "1" ]
+if [ -n "${user}" ] && [ -n "${passwd}" ]
 then
-  login_response_message=$(echo $login_response | awk -F ',' '{print $2}' | awk -F '"' '{print $4}')
-  echo "Error: ${login_response_message}"
-  exit 1
-else
-  echo "成功."
+  echo "登陆即信..."
+  passwd_md5=$(echo -n $passwd | md5sum | awk -F ' ' '{print $1}' | tr a-z A-Z)
+  # echo $passwd_md5
+  login_response=$(curl --silent \
+    --request GET \
+    --url "https://mwf.corp.sdo.com/WFM/SecretVerify.aspx?appid=1614&userid=${user}&password=${passwd_md5}&secretcode=123")
+
+  # echo $login_response
+
+  login_response_result=$(echo $login_response | awk -F ',' '{print $1}' | awk -F ':' '{print $2}')
+  # echo $login_response_result
+  if [ "$login_response_result" != "1" ]
+  then
+    login_response_message=$(echo $login_response | awk -F ',' '{print $2}' | awk -F '"' '{print $4}')
+    echo "Error: ${login_response_message}"
+    exit 1
+  else
+    echo "成功."
+  fi
+
+  login_response_sid=$(echo $login_response | awk -F ',' '{print $3}' | awk -F '"' '{print $4}')
+  # echo $login_response_sid
+  login_response_key=$(echo $login_response | awk -F ',' '{print $4}' | awk -F '"' '{print $4}')
+  # echo $login_response_key
+  login_response_ticket=$(echo $login_response | awk -F ',' '{print $5}' | awk -F '"' '{print $4}')
+  # echo $login_response_ticket
 fi
 
-login_response_sid=$(echo $login_response | awk -F ',' '{print $3}' | awk -F '"' '{print $4}')
-# echo $login_response_sid
-login_response_key=$(echo $login_response | awk -F ',' '{print $4}' | awk -F '"' '{print $4}')
-# echo $login_response_key
-login_response_ticket=$(echo $login_response | awk -F ',' '{print $5}' | awk -F '"' '{print $4}')
-# echo $login_response_ticket
-
-# login_response_sid="E6EBB789881541F2A6CBABBCD5656A31"
-# login_response_key="F8050FC895304799B3E6F23D60B512DE"
+if [ -z "${login_response_sid}" ] || [ -z "${login_response_key}" ]
+then
+  echo "Error: 请填写 (user, passwd) 或者 (sid, key)"
+  exit 1
+fi
 
 function get_sign() {
   # 别在这里 echo 调试信息，会影响函数返回值
