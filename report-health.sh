@@ -29,14 +29,11 @@ commutingMode="自驾(汽车/自行车/电瓶车)"  # 您日常的通勤方式
 oneCommutingTime="30分钟内"  # 您日程的单程通勤时间
 
 
-cookie_file=$(mktemp)
-
 passwd_md5=$(echo -n $passwd | md5sum | awk -F ' ' '{print $1}' | tr a-z A-Z)
 # echo $passwd_md5
 
 echo "登陆即信..."
 login_response=$(curl --silent \
-  --cookie-jar $cookie_file \
   --request GET \
   --url "https://mwf.corp.sdo.com/WFM/SecretVerify.aspx?appid=1614&userid=${user}&password=${passwd_md5}&secretcode=123")
 
@@ -48,7 +45,6 @@ if [ "$login_response_result" != "1" ]
 then
   login_response_message=$(echo $login_response | awk -F ',' '{print $2}' | awk -F '"' '{print $4}')
   echo "Error: ${login_response_message}"
-  /bin/rm -f $cookie_file
   exit 1
 else
   echo "成功."
@@ -76,8 +72,6 @@ params="appid=1614&sid=${login_response_sid}"
 sign=$(get_sign $params)
 # echo $sign
 new_ticket_response=$(curl --silent \
-  --cookie $cookie_file \
-  --cookie-jar $cookie_file \
   --request GET \
   --url "https://mwf.corp.sdo.com/WFM/GetTicketNew.aspx?${params}&sign=${sign}")
 # echo $new_ticket_response
@@ -87,7 +81,6 @@ if [ "$new_ticket_response_result" != "1" ]
 then
   new_ticket_response_message=$(echo $new_ticket_response | awk -F ',' '{print $2}' | awk -F '"' '{print $4}')
   echo "Error: ${new_ticket_response_message}"
-  /bin/rm -f $cookie_file
   exit 1
 else
   echo "成功."
@@ -98,12 +91,12 @@ new_ticket_response_ticket=$(echo $new_ticket_response | awk -F ',' '{print $3}'
 
 echo "登陆健康上报系统..."
 sleep 1
+cookie_file=$(mktemp)
 params="appid=1614&sid=${login_response_sid}&ticket=${new_ticket_response_ticket}"
 # echo $params
 sign=$(get_sign $params)
 # echo $sign
 health_login_response=$(curl --silent \
-  --cookie $cookie_file \
   --cookie-jar $cookie_file \
   --request GET \
   --url "https://health.corp.sdo.com/hrapitest/user/mobileAuth?${params}&sign=${sign}")
