@@ -8,11 +8,3 @@
 * [mac-thunder-remove-advertise.sh](mac-thunder-remove-advertise.sh) : Mac Thunder 去除广告
 * [bbr.sh](bbr.sh) : 开启 BBR
 * [report-health.sh](report-health.sh) : 公司圈上报健康状况
-
-## 一键配置
-
-```bash
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/chrisniael/shell-tools/master/git-config.sh)"
-```
-
-将上述命令中的脚本名改成相应的名字执行
