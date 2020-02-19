@@ -118,7 +118,7 @@ sign=$(get_sign $params)
 health_login_response=$(curl --silent \
   --cookie-jar $cookie_file \
   --request GET \
-  --url "https://health.corp.sdo.com/hrapitest/user/mobileAuth?${params}&sign=${sign}")
+  --url "https://health.corp.sdo.com/hrapi/user/mobileAuth?${params}&sign=${sign}")
 # echo $health_login_response
 health_login_response_code=$(echo $health_login_response | grep -E -o '"code":([0-9])+' | awk -F ':' '{print $2}')
 # echo $health_login_response_code
@@ -139,7 +139,7 @@ health_report_response=$(curl --silent \
   --cookie $cookie_file \
   --cookie-jar $cookie_file \
   --request POST \
-  --url "https://health.corp.sdo.com/hrapitest/hr/clockin" \
+  --url "https://health.corp.sdo.com/hrapi/hr/clockin" \
   --header 'Content-Type: application/json;charset=utf-8' \
   --data-raw "{\"workPlace\":\"${workPlace}\",\"workPlaceRemarks\":\"\",\"workCityId\":0,\"todayIsWork\":${todayIsWork},\"liveInCity\":\"${liveInCity}\",\"isContactRemarks\":\"\",\"currentLocalCity\":\"${currentLocalCity}\",\"isContact\":\"${isContact}\",\"inOutShanghai\":{\"comebackTime\":\"${comebackTime}\",\"fromLocation\":\"${fromLocation}\",\"isOutGuonian\":${isOutGuonian},\"way\":\"${way}\",\"wayNum\":\"\",\"leaveShanggaiTime\":\"${leaveShanggaiTime}\",\"comebackPassCity\":\"${comebackPassCity}\"},\"healthStatusRemarks\":\"\",\"healthStatus\":\"${healthStatus}\",\"floorId\":0,\"feverTemp\":\"\",\"feverIsDoctor\":\"\",\"feverDays\":0,\"coldDays\":0,\"buildingId\":0,\"trafficInfo\":\"\",\"livingStyle\":\"${livingStyle}\",\"detailLivingAddr\":\"${detailLivingAddr}\",\"familyCotenancyType\":\"${familyCotenancyType}\",\"familyCotenancyIsGeli\":\"${familyCotenancyIsGeli}\",\"familyCotenancyGeliEndTime\":\"${familyCotenancyGeliEndTime}\",\"commutingMode\":\"${commutingMode}\",\"oneCommutingTime\":\"${oneCommutingTime}\"}")
 # echo $health_report_response
