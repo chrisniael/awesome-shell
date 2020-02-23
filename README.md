@@ -8,5 +8,4 @@
 * [mac-thunder-remove-advertise.sh](mac-thunder-remove-advertise.sh) : Mac Thunder 去除广告
 * [bbr.sh](bbr.sh) : 开启 BBR
 * [markdown2mobi.sh](markdown2mobi) : markdown 转 mobi
-* [report-health.sh](report-health.sh) : 公司圈上报健康状况
 * [fetch-shared-apple-id.sh](fetch-shared-apple-id.sh) : 抓取共享的 Apple ID
