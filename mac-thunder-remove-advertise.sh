@@ -7,7 +7,7 @@ then
   exit 1
 fi
 
-plugins=(advertising.xlplugin applications.xlplugin featuredpage.xlplugin liveupdate.xlplugin)
+plugins=(advertising.xlplugin applications.xlplugin featuredpage.xlplugin liveupdate.xlplugin xlplayer.xlplugin)
 
 for plugin in ${plugins[@]}
 do
