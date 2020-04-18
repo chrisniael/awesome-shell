@@ -63,4 +63,11 @@ echo $url_html | grep -Eo "【2】美区 apple id 密码：\`.+?\`" | awk -F '`'
 # https://raw.githubusercontent.com/wiki/91CL/91CL-VPN/美区AppleID免费共享.md
 url="https://raw.githubusercontent.com/wiki/91CL/91CL-VPN/$(urlencode '美区AppleID免费共享.md')"
 url_html=$(curl -fsSL $url)
-echo $url_html | grep -Eo "免费分享账号：.+?密码：[^ ]+ "  | awk -F '：' '{print $2"\t"$3}' | awk '{print $1"\t"$3}'
+if [ "$(uname -s)" = "Darwin" ]
+then
+  # Mac 的 grep 和 awk 与 Linux 不太一样
+  echo $url_html | grep -Eo "免费分享账号：.+?密码：[^ ]+ "  | awk -F '：' '{print $2"\t"$3}' | awk '{print $1"\t"$3}'
+else
+  echo $url_html | grep -Po "免费分享账号：.+?密码：[^ ]+ "  | awk -F '[： ]' '{print $2"\t"$4}'
+fi
+
