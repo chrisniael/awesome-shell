@@ -48,10 +48,10 @@ decode_email() {
 
 
 url="https://appledi.com"
-encode_data=$(curl -s https://appledi.com | grep 免费分享账号 | grep -Eo "data-cfemail=\".+?\"" | awk -F '"' '{print $2}')
+encode_data=$(curl -s https://appledi.com | grep "免费分享账号3" | grep -Eo "data-cfemail=\".+?\"" | awk -F '"' '{print $2}')
 # echo $encode_data
 real_email=$(decode_email $encode_data)
-passwd=$(curl -s https://appledi.com | grep 免费分享账号 | grep -Eo "密码：.+? " | awk -F '：' '{print $2}')
+passwd=$(curl -s https://appledi.com | grep "免费分享账号3" | grep -Eo "密码：.+? " | awk -F '：' '{print $2}')
 printf "${real_email}\t${passwd}\n"
 
 # https://raw.githubusercontent.com/wiki/shadowrocketHelp/help/国外-appstore-id-账号分享.md"
